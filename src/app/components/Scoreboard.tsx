@@ -14,13 +14,15 @@ interface PlayerStats {
     gamesPlayed: number
 }
 
-export default function Scoreboard() {
+export default function Scoreboard({ date }: { date?: Date }) {
     const [players, setPlayers] = useState<PlayerStats[]>([])
     const [loading, setLoading] = useState(true)
 
     const fetchScoreboard = async () => {
+        setLoading(true)
         try {
-            const res = await fetch('/api/scoreboard')
+            const query = date ? `?date=${date.toISOString()}` : ''
+            const res = await fetch(`/api/scoreboard${query}`)
             const data = await res.json()
             setPlayers(data)
         } catch (error) {
@@ -34,7 +36,7 @@ export default function Scoreboard() {
         fetchScoreboard()
         const interval = setInterval(fetchScoreboard, 30000)
         return () => clearInterval(interval)
-    }, [])
+    }, [date])
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
