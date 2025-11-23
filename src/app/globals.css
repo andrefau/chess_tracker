@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
+
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #1e293b;
+  --color-secondary-foreground: #ffffff;
+
+  --color-accent: #8b5cf6;
+  --color-accent-foreground: #ffffff;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+
+  --color-card: rgba(30, 41, 59, 0.5);
+  --color-card-foreground: #ffffff;
+
+  --color-border: rgba(255, 255, 255, 0.1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Custom Utilities */
+@utility glass {
+  background-color: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@utility glass-hover {
+  @apply transition-all duration-300;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+  background-attachment: fixed;
 }
