@@ -6,7 +6,7 @@ A modern, premium-styled web application for tracking office chess games. It cal
 
 - **Live Scoreboard**: Real-time leaderboard with Elo ratings and weekly stats (Wins/Losses/Draws).
 - **Elo Rating System**: Automatic calculation of player ratings based on match results.
-- **Weekly Resets**: Win/Loss/Draw stats reset weekly, while Elo ratings persist.
+- **Weekly Resets**: Win/Loss/Draw stats and Elo ratings reset weekly.
 - **Match History**: View past matches with options to edit or delete results.
 - **Auto-Recalculation**: Editing history automatically replays all matches to ensure accurate Elo ratings.
 - **Premium UI**: Dark mode design with glassmorphism effects and responsive layout.
@@ -39,17 +39,22 @@ A modern, premium-styled web application for tracking office chess games. It cal
     npm install
     ```
 
-3.  Initialize the database:
+3.  Set up environment variables:
+    ```bash
+    cp .env.example .env
+    ```
+
+4.  Initialize the database:
     ```bash
     npx prisma migrate dev --name init
     ```
 
-4.  Run the development server:
+5.  Run the development server:
     ```bash
     npm run dev
     ```
 
-5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+6.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 
