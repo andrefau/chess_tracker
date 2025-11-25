@@ -86,7 +86,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
                 ${player.rank === 1 ? 'text-yellow-400' :
                                     player.rank === 2 ? 'text-gray-300' :
                                         'text-amber-600'}`}>
-                                {player.rating}
+                                {player.gamesPlayed > 0 ? player.rating : '-'}
                             </p>
 
                             <div className="flex items-center gap-4 text-sm bg-black/20 rounded-lg px-4 py-2 w-full justify-between">
@@ -123,7 +123,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
                                 <tr key={player.id} className="hover:bg-white/5 transition-colors group">
                                     <td className="p-4 text-center font-mono text-gray-500 font-bold">#{player.rank}</td>
                                     <td className="p-4 font-medium text-gray-200 group-hover:text-white transition-colors">{player.name}</td>
-                                    <td className="p-4 text-right font-mono text-blue-400 font-bold">{player.rating}</td>
+                                    <td className="p-4 text-right font-mono text-blue-400 font-bold">{player.gamesPlayed > 0 ? player.rating : '-'}</td>
                                     <td className="p-4 text-center hidden sm:table-cell">
                                         <div className="flex items-center justify-center gap-3 font-mono text-sm">
                                             <span className="text-green-500">{player.wins}</span>
