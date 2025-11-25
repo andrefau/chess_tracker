@@ -2,14 +2,38 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { calculateElo } from '@/lib/elo'
 
-export async function GET() {
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url)
+    const dateParam = searchParams.get('date')
+
+    let dateFilter = {}
+    if (dateParam) {
+        const targetDate = new Date(dateParam)
+        const day = targetDate.getDay()
+        const diff = targetDate.getDate() - day + (day === 0 ? -6 : 1)
+
+        const startOfWeek = new Date(targetDate)
+        startOfWeek.setDate(diff)
+        startOfWeek.setHours(0, 0, 0, 0)
+
+        const endOfWeek = new Date(startOfWeek)
+        endOfWeek.setDate(startOfWeek.getDate() + 7)
+
+        dateFilter = {
+            date: {
+                gte: startOfWeek,
+                lt: endOfWeek,
+            },
+        }
+    }
+
     const matches = await prisma.match.findMany({
+        where: dateFilter,
         orderBy: { date: 'desc' },
         include: {
             playerA: true,
             playerB: true,
         },
-        take: 50,
     })
     return NextResponse.json(matches)
 }
