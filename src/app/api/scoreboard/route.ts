@@ -99,8 +99,12 @@ export async function GET(request: Request) {
         gamesPlayed: (stats[user.id]?.wins || 0) + (stats[user.id]?.losses || 0) + (stats[user.id]?.draws || 0)
     }))
 
-    // Re-sort by weekly rating
-    scoreboard.sort((a: { rating: number }, b: { rating: number }) => b.rating - a.rating)
+    // Re-sort by weekly rating, but push 0 games played to bottom
+    scoreboard.sort((a: { rating: number; gamesPlayed: number }, b: { rating: number; gamesPlayed: number }) => {
+        if (a.gamesPlayed === 0 && b.gamesPlayed > 0) return 1
+        if (b.gamesPlayed === 0 && a.gamesPlayed > 0) return -1
+        return b.rating - a.rating
+    })
 
     // Add rank
     const rankedScoreboard = scoreboard.map((player: { rating: number }, index: number) => ({
