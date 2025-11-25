@@ -27,7 +27,8 @@ export default function HistoryPage() {
 
     const fetchMatches = async () => {
         try {
-            const res = await fetch('/api/matches')
+            const query = selectedDate ? `?date=${selectedDate.toISOString()}` : ''
+            const res = await fetch(`/api/matches${query}`)
             const data = await res.json()
             setMatches(data)
         } catch (error) {
@@ -39,7 +40,7 @@ export default function HistoryPage() {
 
     useEffect(() => {
         fetchMatches()
-    }, [])
+    }, [selectedDate])
 
     const handleDelete = async (id: string) => {
         if (!confirm('Er du sikker på at du vil slette denne kampen? Dette vil rekalkulere alle Elo-ratingar.')) return
@@ -94,59 +95,57 @@ export default function HistoryPage() {
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                     {/* Week Selector */}
-                    {viewMode === 'scoreboard' && (
-                        <div className="flex items-center gap-2 bg-white/5 rounded-xl p-1 border border-white/10">
-                            <button
-                                onClick={() => {
-                                    const newDate = new Date(selectedDate)
-                                    newDate.setDate(newDate.getDate() - 7)
-                                    setSelectedDate(newDate)
-                                }}
-                                className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
-                            >
-                                <ChevronLeft className="w-4 h-4" />
-                            </button>
-                            <div className="px-2 text-sm font-mono text-gray-300 min-w-[140px] text-center">
-                                {(() => {
-                                    const start = new Date(selectedDate)
-                                    const day = start.getDay()
-                                    const diff = start.getDate() - day + (day === 0 ? -6 : 1)
-                                    start.setDate(diff)
+                    <div className="flex items-center gap-2 bg-white/5 rounded-xl p-1 border border-white/10">
+                        <button
+                            onClick={() => {
+                                const newDate = new Date(selectedDate)
+                                newDate.setDate(newDate.getDate() - 7)
+                                setSelectedDate(newDate)
+                            }}
+                            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <div className="px-2 text-sm font-mono text-gray-300 min-w-[140px] text-center">
+                            {(() => {
+                                const start = new Date(selectedDate)
+                                const day = start.getDay()
+                                const diff = start.getDate() - day + (day === 0 ? -6 : 1)
+                                start.setDate(diff)
 
-                                    const end = new Date(start)
-                                    end.setDate(start.getDate() + 6)
+                                const end = new Date(start)
+                                end.setDate(start.getDate() + 6)
 
-                                    return `${start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
-                                })()}
-                            </div>
-                            <button
-                                onClick={() => {
-                                    const newDate = new Date(selectedDate)
-                                    newDate.setDate(newDate.getDate() + 7)
-                                    setSelectedDate(newDate)
-                                }}
-                                disabled={(() => {
-                                    const now = new Date()
-                                    const currentWeekStart = new Date(now)
-                                    const day = now.getDay()
-                                    const diff = now.getDate() - day + (day === 0 ? -6 : 1)
-                                    currentWeekStart.setDate(diff)
-                                    currentWeekStart.setHours(0, 0, 0, 0)
-
-                                    const selectedWeekStart = new Date(selectedDate)
-                                    const selectedDay = selectedWeekStart.getDay()
-                                    const selectedDiff = selectedWeekStart.getDate() - selectedDay + (selectedDay === 0 ? -6 : 1)
-                                    selectedWeekStart.setDate(selectedDiff)
-                                    selectedWeekStart.setHours(0, 0, 0, 0)
-
-                                    return selectedWeekStart >= currentWeekStart
-                                })()}
-                                className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
-                            >
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
+                                return `${start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
+                            })()}
                         </div>
-                    )}
+                        <button
+                            onClick={() => {
+                                const newDate = new Date(selectedDate)
+                                newDate.setDate(newDate.getDate() + 7)
+                                setSelectedDate(newDate)
+                            }}
+                            disabled={(() => {
+                                const now = new Date()
+                                const currentWeekStart = new Date(now)
+                                const day = now.getDay()
+                                const diff = now.getDate() - day + (day === 0 ? -6 : 1)
+                                currentWeekStart.setDate(diff)
+                                currentWeekStart.setHours(0, 0, 0, 0)
+
+                                const selectedWeekStart = new Date(selectedDate)
+                                const selectedDay = selectedWeekStart.getDay()
+                                const selectedDiff = selectedWeekStart.getDate() - selectedDay + (selectedDay === 0 ? -6 : 1)
+                                selectedWeekStart.setDate(selectedDiff)
+                                selectedWeekStart.setHours(0, 0, 0, 0)
+
+                                return selectedWeekStart >= currentWeekStart
+                            })()}
+                            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                        >
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+                    </div>
 
                     {/* View Toggle */}
                     <div className="flex bg-white/5 rounded-xl p-1 border border-white/10 w-full sm:w-auto">
