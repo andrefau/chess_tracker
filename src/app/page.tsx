@@ -13,7 +13,7 @@ export default function Home() {
                     </div>
                     <div className="text-center md:text-left">
                         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent tracking-tight">
-                            Chess Tracker
+                            Sjakkmeisterskapet
                         </h1>
                         <p className="text-blue-400/80 font-medium tracking-wide uppercase text-sm mt-1">Vekentleg kontormeisterskap</p>
                     </div>
