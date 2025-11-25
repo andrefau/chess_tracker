@@ -41,7 +41,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
             <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-400 animate-pulse">Loading rankings...</p>
+            <p className="text-gray-400 animate-pulse">Lastar rangering...</p>
         </div>
     )
 
@@ -49,8 +49,8 @@ export default function Scoreboard({ date }: { date?: Date }) {
         return (
             <div className="text-center py-20 px-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">
                 <Trophy className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">No Players Yet</h3>
-                <p className="text-gray-400">The arena is empty. Be the first to join!</p>
+                <h3 className="text-xl font-semibold text-white mb-2">Ingen spelarar enno</h3>
+                <p className="text-gray-400">Arenaen er tom. Ver den første til å bli med!</p>
             </div>
         )
     }
@@ -111,11 +111,11 @@ export default function Scoreboard({ date }: { date?: Date }) {
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-black/20 text-gray-400 uppercase text-xs tracking-wider">
                             <tr>
-                                <th className="p-4 font-semibold text-center w-16">Rank</th>
-                                <th className="p-4 font-semibold">Player</th>
+                                <th className="p-4 font-semibold text-center w-16">Rang</th>
+                                <th className="p-4 font-semibold">Spelar</th>
                                 <th className="p-4 font-semibold text-right">Rating</th>
-                                <th className="p-4 font-semibold text-center hidden sm:table-cell">Stats (W-L-D)</th>
-                                <th className="p-4 font-semibold text-right">Games</th>
+                                <th className="p-4 font-semibold text-center hidden sm:table-cell">Statistikk (V-T-U)</th>
+                                <th className="p-4 font-semibold text-right">Kampar</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">

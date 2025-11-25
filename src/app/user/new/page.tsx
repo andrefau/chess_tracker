@@ -39,27 +39,27 @@ export default function NewUserPage() {
         <main className="min-h-screen p-4 flex items-center justify-center">
             <div className="w-full max-w-md bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl">
                 <Link href="/" className="text-gray-400 hover:text-white flex items-center gap-2 mb-8 transition-colors group">
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Scoreboard
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Tilbake til poengtavla
                 </Link>
 
                 <div className="flex items-center gap-4 mb-8">
                     <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400">
                         <UserPlus className="w-6 h-6" />
                     </div>
-                    <h1 className="text-2xl font-bold text-white">Add New Player</h1>
+                    <h1 className="text-2xl font-bold text-white">Legg til ny spelar</h1>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     <Input
-                        label="Player Name"
-                        placeholder="e.g. Magnus Carlsen"
+                        label="Spelarnamn"
+                        placeholder="f.eks. Magnus Carlsen"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         autoFocus
                     />
 
                     <Button type="submit" disabled={loading || !name.trim()} className="w-full mt-2">
-                        {loading ? 'Adding...' : 'Add Player'}
+                        {loading ? 'Legg til...' : 'Legg til spelar'}
                     </Button>
                 </form>
             </div>

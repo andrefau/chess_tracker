@@ -15,24 +15,24 @@ export default function Home() {
                         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent tracking-tight">
                             Chess Tracker
                         </h1>
-                        <p className="text-blue-400/80 font-medium tracking-wide uppercase text-sm mt-1">Weekly Office Championship</p>
+                        <p className="text-blue-400/80 font-medium tracking-wide uppercase text-sm mt-1">Vekentleg kontormeisterskap</p>
                     </div>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-3">
                     <Link href="/history">
                         <Button variant="secondary" className="flex items-center gap-2">
-                            <History className="w-4 h-4" /> History
+                            <History className="w-4 h-4" /> Historikk
                         </Button>
                     </Link>
                     <Link href="/user/new">
                         <Button variant="outline" className="flex items-center gap-2">
-                            <UserPlus className="w-4 h-4" /> Add Player
+                            <UserPlus className="w-4 h-4" /> Legg til spelar
                         </Button>
                     </Link>
                     <Link href="/match/new">
                         <Button className="flex items-center gap-2 shadow-lg shadow-blue-500/20">
-                            <Plus className="w-4 h-4" /> Record Match
+                            <Plus className="w-4 h-4" /> Registrer kamp
                         </Button>
                     </Link>
                 </div>

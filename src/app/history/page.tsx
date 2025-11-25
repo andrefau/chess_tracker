@@ -42,7 +42,7 @@ export default function HistoryPage() {
     }, [])
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this match? This will recalculate all Elo ratings.')) return
+        if (!confirm('Er du sikker på at du vil slette denne kampen? Dette vil rekalkulere alle Elo-ratingar.')) return
 
         try {
             await fetch(`/api/matches/${id}`, { method: 'DELETE' })
@@ -86,9 +86,9 @@ export default function HistoryPage() {
                     <div>
                         <h1 className="text-3xl font-bold text-white flex items-center gap-3">
                             <History className="w-8 h-8 text-blue-500" />
-                            History & Stats
+                            Historikk og statistikk
                         </h1>
-                        <p className="text-gray-400 mt-1">Review past battles and weekly rankings</p>
+                        <p className="text-gray-400 mt-1">Sjå tidlegare kampar og vekentlege rangeringar</p>
                     </div>
                 </div>
 
@@ -158,7 +158,7 @@ export default function HistoryPage() {
                                 }`}
                         >
                             <List className="w-4 h-4" />
-                            Matches
+                            Kampar
                         </button>
                         <button
                             onClick={() => setViewMode('scoreboard')}
@@ -168,7 +168,7 @@ export default function HistoryPage() {
                                 }`}
                         >
                             <Trophy className="w-4 h-4" />
-                            Scoreboard
+                            Poengtavle
                         </button>
                     </div>
                 </div>
@@ -207,9 +207,9 @@ export default function HistoryPage() {
                                                 onChange={(e) => setEditResult(e.target.value)}
                                                 className="bg-transparent text-white text-sm p-1 focus:outline-none"
                                             >
-                                                <option value="A_WON" className="bg-gray-900">White Won</option>
-                                                <option value="B_WON" className="bg-gray-900">Black Won</option>
-                                                <option value="DRAW" className="bg-gray-900">Draw</option>
+                                                <option value="A_WON" className="bg-gray-900">Kvit vann</option>
+                                                <option value="B_WON" className="bg-gray-900">Svart vann</option>
+                                                <option value="DRAW" className="bg-gray-900">Uavgjort</option>
                                             </select>
                                             <button onClick={() => handleSave(match.id)} className="p-1 text-green-500 hover:bg-green-500/20 rounded">
                                                 <Save className="w-4 h-4" />
@@ -222,9 +222,9 @@ export default function HistoryPage() {
                                         <>
                                             <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
                           ${match.result === 'DRAW' ? 'bg-gray-500/20 text-gray-400' : 'bg-green-500/20 text-green-400'}`}>
-                                                {match.result === 'A_WON' ? 'White Won' :
-                                                    match.result === 'B_WON' ? 'Black Won' :
-                                                        'Draw'}
+                                                {match.result === 'A_WON' ? 'Kvit vann' :
+                                                    match.result === 'B_WON' ? 'Svart vann' :
+                                                        'Uavgjort'}
                                             </span>
                                             <div className="flex gap-1">
                                                 <button
