@@ -70,7 +70,7 @@ export default function NewMatchPage() {
         <main className="min-h-screen p-4 flex items-center justify-center">
             <div className="w-full max-w-lg bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl">
                 <Link href="/" className="text-gray-400 hover:text-white flex items-center gap-2 mb-8 transition-colors group">
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Scoreboard
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Tilbake til poengtavla
                 </Link>
 
                 <div className="flex items-center gap-4 mb-8">
@@ -78,21 +78,21 @@ export default function NewMatchPage() {
                         <Swords className="w-6 h-6" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-white">Record Match</h1>
-                        <p className="text-gray-400 text-sm">Who emerged victorious?</p>
+                        <h1 className="text-2xl font-bold text-white">Registrer kamp</h1>
+                        <p className="text-gray-400 text-sm">Kven gjekk av med sigeren?</p>
                     </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                         <Select
-                            label="White Pieces"
+                            label="Kvite brikker"
                             value={playerAId}
                             onChange={(e) => setPlayerAId(e.target.value)}
                             required
                             className="bg-white/10 border-white/20"
                         >
-                            <option value="" className="bg-gray-900">Select Player...</option>
+                            <option value="" className="bg-gray-900">Vel spelar...</option>
                             {users.map(user => (
                                 <option key={user.id} value={user.id} disabled={user.id === playerBId} className="bg-gray-900">
                                     {user.name}
@@ -103,13 +103,13 @@ export default function NewMatchPage() {
                         <div className="hidden md:flex justify-center pb-4 text-gray-500 font-bold text-xs uppercase tracking-widest">VS</div>
 
                         <Select
-                            label="Black Pieces"
+                            label="Svarte brikker"
                             value={playerBId}
                             onChange={(e) => setPlayerBId(e.target.value)}
                             required
                             className="bg-black/40 border-white/10"
                         >
-                            <option value="" className="bg-gray-900">Select Player...</option>
+                            <option value="" className="bg-gray-900">Vel spelar...</option>
                             {users.map(user => (
                                 <option key={user.id} value={user.id} disabled={user.id === playerAId} className="bg-gray-900">
                                     {user.name}
@@ -119,7 +119,7 @@ export default function NewMatchPage() {
                     </div>
 
                     <div className="bg-black/20 p-6 rounded-xl border border-white/5">
-                        <label className="text-sm font-medium text-gray-400 mb-4 block text-center uppercase tracking-wider">Match Result</label>
+                        <label className="text-sm font-medium text-gray-400 mb-4 block text-center uppercase tracking-wider">Kampresultat</label>
                         <div className="grid grid-cols-3 gap-3">
                             <button
                                 type="button"
@@ -130,7 +130,7 @@ export default function NewMatchPage() {
                                     }`}
                             >
                                 <Trophy className={`w-5 h-5 ${result === 'A_WON' ? 'text-yellow-500' : 'text-gray-600'}`} />
-                                White
+                                Kvit
                             </button>
                             <button
                                 type="button"
@@ -141,7 +141,7 @@ export default function NewMatchPage() {
                                     }`}
                             >
                                 <Minus className="w-5 h-5" />
-                                Draw
+                                Uavgjort
                             </button>
                             <button
                                 type="button"
@@ -152,7 +152,7 @@ export default function NewMatchPage() {
                                     }`}
                             >
                                 <Trophy className={`w-5 h-5 ${result === 'B_WON' ? 'text-yellow-500' : 'text-gray-600'}`} />
-                                Black
+                                Svart
                             </button>
                         </div>
                     </div>
@@ -162,7 +162,7 @@ export default function NewMatchPage() {
                         disabled={submitting || !playerAId || !playerBId || playerAId === playerBId}
                         className="w-full py-4 text-lg shadow-xl shadow-blue-500/20"
                     >
-                        {submitting ? 'Recording Match...' : 'Submit Result'}
+                        {submitting ? 'Registrerer kamp...' : 'Send inn resultat'}
                     </Button>
                 </form>
             </div>
