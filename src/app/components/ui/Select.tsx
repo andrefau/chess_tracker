@@ -2,7 +2,7 @@ import React from 'react'
 import { ChevronDown } from 'lucide-react'
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-    label?: string
+    label?: React.ReactNode
 }
 
 export function Select({ label, className, children, ...props }: SelectProps) {
