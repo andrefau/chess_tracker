@@ -6,10 +6,12 @@ import Link from 'next/link'
 import { Button } from '@/app/components/ui/Button'
 import { Select } from '@/app/components/ui/Select'
 import { ArrowLeft, Swords, Trophy, Minus } from 'lucide-react'
+import { calculateElo } from '@/lib/elo'
 
 interface User {
     id: string
     name: string
+    rating: number
 }
 
 export default function NewMatchPage() {
@@ -25,7 +27,7 @@ export default function NewMatchPage() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await fetch('/api/users')
+                const res = await fetch('/api/scoreboard')
                 const data = await res.json()
                 setUsers(data)
             } catch (error) {
@@ -36,6 +38,35 @@ export default function NewMatchPage() {
         }
         fetchUsers()
     }, [])
+
+    const getRatingChange = (playerId: string, isPlayerA: boolean) => {
+        if (!playerAId || !playerBId || playerAId === playerBId) return null
+
+        const playerA = users.find(u => u.id === playerAId)
+        const playerB = users.find(u => u.id === playerBId)
+
+        if (!playerA || !playerB) return null
+
+        let scoreA = 0.5
+        if (result === 'A_WON') scoreA = 1
+        else if (result === 'B_WON') scoreA = 0
+
+        const currentRating = isPlayerA ? playerA.rating : playerB.rating
+        const opponentRating = isPlayerA ? playerB.rating : playerA.rating
+        const score = isPlayerA ? scoreA : 1 - scoreA
+
+        const newRating = calculateElo(currentRating, opponentRating, score)
+        const delta = newRating - currentRating
+
+        return delta
+    }
+
+    const renderRatingChange = (delta: number | null) => {
+        if (delta === null) return null
+        const color = delta > 0 ? 'text-green-400' : delta < 0 ? 'text-red-400' : 'text-gray-400'
+        const sign = delta > 0 ? '+' : ''
+        return <span className={`text-sm font-mono font-bold ${color} ml-2`}>{sign}{delta}</span>
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -85,37 +116,51 @@ export default function NewMatchPage() {
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                        <Select
-                            label="Kvite brikker"
-                            value={playerAId}
-                            onChange={(e) => setPlayerAId(e.target.value)}
-                            required
-                            className="bg-white/10 border-white/20"
-                        >
-                            <option value="" className="bg-gray-900">Vel spelar...</option>
-                            {users.map(user => (
-                                <option key={user.id} value={user.id} disabled={user.id === playerBId} className="bg-gray-900">
-                                    {user.name}
-                                </option>
-                            ))}
-                        </Select>
+                        <div className="relative">
+                            <Select
+                                label={
+                                    <span className="flex items-center">
+                                        Kvite brikker
+                                        {renderRatingChange(getRatingChange(playerAId, true))}
+                                    </span>
+                                }
+                                value={playerAId}
+                                onChange={(e) => setPlayerAId(e.target.value)}
+                                required
+                                className="bg-white/10 border-white/20"
+                            >
+                                <option value="" className="bg-gray-900">Vel spelar...</option>
+                                {users.map(user => (
+                                    <option key={user.id} value={user.id} disabled={user.id === playerBId} className="bg-gray-900">
+                                        {user.name} ({user.rating})
+                                    </option>
+                                ))}
+                            </Select>
+                        </div>
 
                         <div className="hidden md:flex justify-center pb-4 text-gray-500 font-bold text-xs uppercase tracking-widest">VS</div>
 
-                        <Select
-                            label="Svarte brikker"
-                            value={playerBId}
-                            onChange={(e) => setPlayerBId(e.target.value)}
-                            required
-                            className="bg-black/40 border-white/10"
-                        >
-                            <option value="" className="bg-gray-900">Vel spelar...</option>
-                            {users.map(user => (
-                                <option key={user.id} value={user.id} disabled={user.id === playerAId} className="bg-gray-900">
-                                    {user.name}
-                                </option>
-                            ))}
-                        </Select>
+                        <div className="relative">
+                            <Select
+                                label={
+                                    <span className="flex items-center">
+                                        Svarte brikker
+                                        {renderRatingChange(getRatingChange(playerBId, false))}
+                                    </span>
+                                }
+                                value={playerBId}
+                                onChange={(e) => setPlayerBId(e.target.value)}
+                                required
+                                className="bg-black/40 border-white/10"
+                            >
+                                <option value="" className="bg-gray-900">Vel spelar...</option>
+                                {users.map(user => (
+                                    <option key={user.id} value={user.id} disabled={user.id === playerAId} className="bg-gray-900">
+                                        {user.name} ({user.rating})
+                                    </option>
+                                ))}
+                            </Select>
+                        </div>
                     </div>
 
                     <div className="bg-black/20 p-6 rounded-xl border border-white/5">
