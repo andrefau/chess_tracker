@@ -91,13 +91,13 @@ export default function Scoreboard({ date }: { date?: Date }) {
 
                             <div className="flex items-center gap-4 text-sm bg-black/20 rounded-lg px-4 py-2 w-full justify-between">
                                 <div className="flex flex-col">
-                                    <span className="text-green-400 font-bold">{player.wins}W</span>
+                                    <span className="text-green-400 font-bold">{player.wins}V</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-red-400 font-bold">{player.losses}L</span>
+                                    <span className="text-red-400 font-bold">{player.losses}T</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-gray-400 font-bold">{player.draws}D</span>
+                                    <span className="text-gray-400 font-bold">{player.draws}U</span>
                                 </div>
                             </div>
                         </div>
