@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Trophy, Medal, Crown, TrendingUp, Minus, TrendingDown } from 'lucide-react'
+import FunFact from './FunFact'
 
 interface PlayerStats {
     rank: number
@@ -34,7 +35,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
 
     useEffect(() => {
         fetchScoreboard()
-        const interval = setInterval(fetchScoreboard, 30000)
+        const interval = setInterval(fetchScoreboard, 60000)
         return () => clearInterval(interval)
     }, [date])
 
@@ -103,6 +104,11 @@ export default function Scoreboard({ date }: { date?: Date }) {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* Fun Fact Infobox */}
+            <div className="mb-8">
+                <FunFact />
             </div>
 
             {/* List View for Rest */}
