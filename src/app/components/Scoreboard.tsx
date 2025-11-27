@@ -62,15 +62,6 @@ export default function Scoreboard({ date }: { date?: Date }) {
 
     return (
         <div className="w-full max-w-5xl mx-auto space-y-6">
-            <div className="flex justify-end mb-4">
-                <button
-                    onClick={() => setShowSummaryModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 rounded-lg border border-yellow-500/20 transition-all hover:scale-105"
-                >
-                    <Trophy className="w-4 h-4" />
-                    <span className="font-medium">Vekas vinnar</span>
-                </button>
-            </div>
 
             {/* Top 3 Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -160,6 +151,16 @@ export default function Scoreboard({ date }: { date?: Date }) {
                     </table>
                 </div>
             )}
+
+            <div className="flex justify-end mb-4">
+                <button
+                    onClick={() => setShowSummaryModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 rounded-lg border border-yellow-500/20 transition-all hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.3)]"
+                >
+                    <Trophy className="w-4 h-4" />
+                    <span className="font-medium">Vekas vinnar</span>
+                </button>
+            </div>
 
             <WeeklySummaryModal
                 isOpen={showSummaryModal}
