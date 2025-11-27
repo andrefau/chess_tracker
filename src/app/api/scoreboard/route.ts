@@ -33,24 +33,31 @@ export async function GET(request: Request) {
     })
 
     // Aggregate stats
-    const stats: Record<string, { wins: number; losses: number; draws: number }> = {}
+    const stats: Record<string, { wins: number; losses: number; draws: number; gamesAsWhite: number; gamesAsBlack: number }> = {}
 
     users.forEach((user: { id: string }) => {
-        stats[user.id] = { wins: 0, losses: 0, draws: 0 }
+        stats[user.id] = { wins: 0, losses: 0, draws: 0, gamesAsWhite: 0, gamesAsBlack: 0 }
     })
 
     matches.forEach((match: { playerAId: string; playerBId: string; result: string }) => {
         const { playerAId, playerBId, result } = match
 
+        // Initialize if not exists (though it should be initialized above)
+        if (!stats[playerAId]) stats[playerAId] = { wins: 0, losses: 0, draws: 0, gamesAsWhite: 0, gamesAsBlack: 0 }
+        if (!stats[playerBId]) stats[playerBId] = { wins: 0, losses: 0, draws: 0, gamesAsWhite: 0, gamesAsBlack: 0 }
+
+        stats[playerAId].gamesAsWhite++
+        stats[playerBId].gamesAsBlack++
+
         if (result === 'A_WON') {
-            if (stats[playerAId]) stats[playerAId].wins++
-            if (stats[playerBId]) stats[playerBId].losses++
+            stats[playerAId].wins++
+            stats[playerBId].losses++
         } else if (result === 'B_WON') {
-            if (stats[playerAId]) stats[playerAId].losses++
-            if (stats[playerBId]) stats[playerBId].wins++
+            stats[playerAId].losses++
+            stats[playerBId].wins++
         } else {
-            if (stats[playerAId]) stats[playerAId].draws++
-            if (stats[playerBId]) stats[playerBId].draws++
+            stats[playerAId].draws++
+            stats[playerBId].draws++
         }
     })
 
@@ -96,6 +103,8 @@ export async function GET(request: Request) {
         wins: stats[user.id]?.wins || 0,
         losses: stats[user.id]?.losses || 0,
         draws: stats[user.id]?.draws || 0,
+        gamesAsWhite: stats[user.id]?.gamesAsWhite || 0,
+        gamesAsBlack: stats[user.id]?.gamesAsBlack || 0,
         gamesPlayed: (stats[user.id]?.wins || 0) + (stats[user.id]?.losses || 0) + (stats[user.id]?.draws || 0)
     }))
 
