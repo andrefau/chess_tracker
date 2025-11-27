@@ -1,31 +1,43 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { Sparkles } from 'lucide-react'
 
 export default function FunFact() {
     const [fact, setFact] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
+    const [isVisible, setIsVisible] = useState(true)
+    const loadingRef = useRef(true)
 
-    const fetchFact = async () => {
+    const fetchFact = useCallback(async () => {
         try {
             const res = await fetch('/api/fun-facts')
             const data = await res.json()
             if (data.fact) {
-                setFact(data.fact)
+                if (loadingRef.current) {
+                    setFact(data.fact)
+                    setLoading(false)
+                    loadingRef.current = false
+                } else {
+                    setIsVisible(false)
+                    setTimeout(() => {
+                        setFact(data.fact)
+                        setIsVisible(true)
+                    }, 500)
+                }
             }
         } catch (error) {
             console.error('Failed to fetch fun facts', error)
-        } finally {
             setLoading(false)
+            loadingRef.current = false
         }
-    }
+    }, [])
 
     useEffect(() => {
         fetchFact()
         const interval = setInterval(fetchFact, 20000) // Fetch new fact every 20 seconds
         return () => clearInterval(interval)
-    }, [])
+    }, [fetchFact])
 
     if (loading || !fact) return null
 
@@ -41,7 +53,7 @@ export default function FunFact() {
                     <span>Visste du at?</span>
                 </div>
 
-                <p className="text-lg md:text-xl font-medium text-white animate-fade-in key={fact}">
+                <p className={`text-lg md:text-xl font-medium text-white transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
                     {fact}
                 </p>
             </div>
