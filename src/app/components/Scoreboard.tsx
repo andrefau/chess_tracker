@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Trophy, Crown } from 'lucide-react'
 import FunFact from './FunFact'
 import WeeklySummaryModal from './WeeklySummaryModal'
@@ -25,6 +25,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
 
     const [timeRemaining, setTimeRemaining] = useState<string>('')
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+    const hasAutoOpened = useRef(false)
 
     useEffect(() => {
         if (date) {
@@ -36,6 +37,12 @@ export default function Scoreboard({ date }: { date?: Date }) {
             const now = new Date()
             const day = now.getDay() // 0 = Sunday, 1 = Monday, ..., 5 = Friday, 6 = Saturday
             const hour = now.getHours()
+
+            // Auto-open logic: Friday >= 14:00
+            if (day === 5 && hour >= 14 && !hasAutoOpened.current) {
+                setShowSummaryModal(true)
+                hasAutoOpened.current = true
+            }
 
             // Enable if it's Friday >= 14:00 or Saturday or Sunday
             if (day > 5 || (day === 5 && hour >= 14) || day === 0) {
