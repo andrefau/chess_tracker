@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Trophy, Medal, Crown, TrendingUp, Minus, TrendingDown } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
+import { Trophy, Crown } from 'lucide-react'
 import FunFact from './FunFact'
 import WeeklySummaryModal from './WeeklySummaryModal'
 
@@ -22,6 +22,59 @@ export default function Scoreboard({ date }: { date?: Date }) {
     const [players, setPlayers] = useState<PlayerStats[]>([])
     const [loading, setLoading] = useState(true)
     const [showSummaryModal, setShowSummaryModal] = useState(false)
+
+    const [timeRemaining, setTimeRemaining] = useState<string>('')
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+    const hasAutoOpened = useRef(false)
+
+    useEffect(() => {
+        if (date) {
+            setIsButtonDisabled(false)
+            return
+        }
+
+        const checkTime = () => {
+            const now = new Date()
+            const day = now.getDay() // 0 = Sunday, 1 = Monday, ..., 5 = Friday, 6 = Saturday
+            const hour = now.getHours()
+
+            // Auto-open logic: Friday >= 14:00
+            if (day === 5 && hour >= 14 && !hasAutoOpened.current) {
+                setShowSummaryModal(true)
+                hasAutoOpened.current = true
+            }
+
+            // Enable if it's Friday >= 14:00 or Saturday or Sunday
+            if (day > 5 || (day === 5 && hour >= 14) || day === 0) {
+                setIsButtonDisabled(false)
+                return
+            }
+
+            setIsButtonDisabled(true)
+
+            // Calculate time until Friday 14:00
+            const friday = new Date(now)
+            friday.setDate(now.getDate() + (5 - day))
+            friday.setHours(14, 0, 0, 0)
+
+            const diff = friday.getTime() - now.getTime()
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+
+            if (days > 0) {
+                setTimeRemaining(`${days} dagar og ${hours} timar`)
+            } else if (hours > 0) {
+                setTimeRemaining(`${hours} timar og ${minutes} minutt`)
+            } else {
+                setTimeRemaining(`${minutes} minutt`)
+            }
+        }
+
+        checkTime()
+        const interval = setInterval(checkTime, 60000)
+        return () => clearInterval(interval)
+    }, [date])
 
     const fetchScoreboard = async () => {
         setLoading(true)
@@ -153,13 +206,25 @@ export default function Scoreboard({ date }: { date?: Date }) {
             )}
 
             <div className="flex justify-end mb-4">
-                <button
-                    onClick={() => setShowSummaryModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 rounded-lg border border-yellow-500/20 transition-all hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-                >
-                    <Trophy className="w-4 h-4" />
-                    <span className="font-medium">Vekas vinnar</span>
-                </button>
+                <div className="relative group">
+                    <button
+                        onClick={() => setShowSummaryModal(true)}
+                        disabled={isButtonDisabled}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all 
+                            ${isButtonDisabled
+                                ? 'bg-gray-800/50 text-gray-500 border-gray-700 cursor-not-allowed'
+                                : 'bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 border-yellow-500/20 hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.3)]'
+                            }`}
+                    >
+                        <Trophy className="w-4 h-4" />
+                        <span className="font-medium">Vekas vinnar</span>
+                    </button>
+                    {isButtonDisabled && (
+                        <div className="absolute bottom-full right-0 mb-2 w-max px-3 py-1.5 bg-gray-900 text-gray-300 text-xs rounded-lg border border-white/10 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            Tilgjengeleg om {timeRemaining}
+                        </div>
+                    )}
+                </div>
             </div>
 
             <WeeklySummaryModal
