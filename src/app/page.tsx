@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Scoreboard from './components/Scoreboard'
+import RegisterMatchButton from './components/RegisterMatchButton'
 import { Button } from './components/ui/Button'
-import { Plus, UserPlus, History, Trophy } from 'lucide-react'
+import { UserPlus, History, Trophy } from 'lucide-react'
 
 export default function Home() {
     return (
@@ -30,11 +31,7 @@ export default function Home() {
                             <UserPlus className="w-4 h-4" /> Legg til spelar
                         </Button>
                     </Link>
-                    <Link href="/match/new">
-                        <Button className="flex items-center gap-2 shadow-lg shadow-blue-500/20">
-                            <Plus className="w-4 h-4" /> Registrer kamp
-                        </Button>
-                    </Link>
+                    <RegisterMatchButton />
                 </div>
             </header>
 

@@ -92,7 +92,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
 
     useEffect(() => {
         fetchScoreboard()
-        const interval = setInterval(fetchScoreboard, 60000)
+        const interval = setInterval(fetchScoreboard, 1800000) // 30 minutes
         return () => clearInterval(interval)
     }, [date])
 
