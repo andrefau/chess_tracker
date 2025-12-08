@@ -76,7 +76,7 @@ export async function GET(request: Request) {
         const ratingA = weeklyRatings[playerAId] || 1200
         const ratingB = weeklyRatings[playerBId] || 1200
 
-        const K = 32
+        const K = 96
         const expectedA = 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400))
         const expectedB = 1 / (1 + Math.pow(10, (ratingA - ratingB) / 400))
 
