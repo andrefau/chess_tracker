@@ -117,3 +117,35 @@ export async function GET(
         matches: playerMatches
     })
 }
+
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const { id } = await params
+
+        // Delete user and all their matches in a transaction
+        await prisma.$transaction(async (tx) => {
+            // Delete matches where user is playerA or playerB
+            await tx.match.deleteMany({
+                where: {
+                    OR: [
+                        { playerAId: id },
+                        { playerBId: id }
+                    ]
+                }
+            })
+
+            // Delete the user
+            await tx.user.delete({
+                where: { id }
+            })
+        })
+
+        return NextResponse.json({ success: true })
+    } catch (error) {
+        console.error('Error deleting user:', error)
+        return NextResponse.json({ error: 'Error deleting user' }, { status: 500 })
+    }
+}

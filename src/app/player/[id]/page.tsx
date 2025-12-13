@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Trophy, Swords, Calendar } from 'lucide-react'
+import { ArrowLeft, Swords, Trash2 } from 'lucide-react'
 import EloGraph from '@/app/components/EloGraph'
+import ConfirmationModal from '@/app/components/ConfirmationModal'
 
 interface PlayerData {
     user: {
@@ -21,14 +22,16 @@ interface PlayerData {
         gamesAsWhite: number
         gamesAsBlack: number
     }
-    history: { date: string; elo: number }[]
+    history: { date: string; elo: number; matchId?: string }[]
     matches: any[]
 }
 
 export default function PlayerPage() {
     const { id } = useParams()
+    const router = useRouter()
     const [data, setData] = useState<PlayerData | null>(null)
     const [loading, setLoading] = useState(true)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,6 +49,17 @@ export default function PlayerPage() {
         }
         if (id) fetchData()
     }, [id])
+
+    const handleDelete = async () => {
+        try {
+            const res = await fetch(`/api/users/${id}`, { method: 'DELETE' })
+            if (res.ok) {
+                router.push('/')
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error)
+        }
+    }
 
     if (loading) {
         return (
@@ -71,12 +85,23 @@ export default function PlayerPage() {
         <main className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto space-y-8 pb-20">
             {/* Header */}
             <header className="flex flex-col md:flex-row items-baseline justify-between gap-4 border-b border-white/10 pb-6">
-                <div>
-                    <Link href="/" className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-2 mb-4 transition-colors">
-                        <ArrowLeft className="w-4 h-4" /> Tilbake til oversikta
-                    </Link>
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{data.user.name}</h1>
-                    <p className="text-gray-400 text-sm">Medlem sidan {new Date(data.user.createdAt).toLocaleDateString('no-NO')}</p>
+                <div className="flex-1">
+                    <div className="flex justify-between items-start w-full">
+                        <div>
+                            <Link href="/" className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-2 mb-4 transition-colors">
+                                <ArrowLeft className="w-4 h-4" /> Tilbake til oversikta
+                            </Link>
+                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{data.user.name}</h1>
+                            <p className="text-gray-400 text-sm">Medlem sidan {new Date(data.user.createdAt).toLocaleDateString('no-NO')}</p>
+                        </div>
+                        <button
+                            onClick={() => setShowDeleteModal(true)}
+                            className="p-2 text-red-400/50 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                            title="Slett spelar"
+                        >
+                            <Trash2 className="w-5 h-5" />
+                        </button>
+                    </div>
                 </div>
                 <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
                     <div className="text-right">
@@ -135,7 +160,6 @@ export default function PlayerPage() {
                                     const isWin = (match.playerAId === data.user.id && match.result === 'A_WON') ||
                                         (match.playerBId === data.user.id && match.result === 'B_WON')
                                     const isDraw = match.result === 'DRAW'
-                                    const ratingChange = match.userEloAfter - (data.history.find(h => h.matchId === match.id && h.date < match.date)?.elo && 1200) // Approximation, better to calculate explicit diff
                                     // Better diff calculation: find prev elo
                                     // Actually we can just show the new elo for now, or calculate diff if we want to be fancy.
                                     // Let's just show the new Elo.
@@ -182,6 +206,16 @@ export default function PlayerPage() {
                     </div>
                 </div>
             </div>
+
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDelete}
+                title="Slett spelar"
+                message="Er du sikker på at du vil slette denne spelaren? Alle kampar og historikk vil bli sletta permanent. Dette kan ikkje angrast."
+                confirmText="Slett spelar"
+                variant="danger"
+            />
         </main>
     )
 }
