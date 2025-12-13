@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import Link from 'next/link'
 import { Trophy, Crown } from 'lucide-react'
 import FunFact from './FunFact'
 import WeeklySummaryModal from './WeeklySummaryModal'
@@ -119,8 +120,8 @@ export default function Scoreboard({ date }: { date?: Date }) {
             {/* Top 3 Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {players.slice(0, 3).map((player) => (
-                    <div key={player.id}
-                        className={`relative overflow-hidden rounded-2xl p-6 border backdrop-blur-xl transition-all duration-500 hover:transform hover:-translate-y-1
+                    <Link href={`/player/${player.id}`} key={player.id}
+                        className={`relative overflow-hidden rounded-2xl p-6 border backdrop-blur-xl transition-all duration-500 hover:transform hover:-translate-y-1 block
               ${player.rank === 1
                                 ? 'bg-gradient-to-b from-yellow-500/10 to-yellow-900/5 border-yellow-500/30 shadow-[0_0_30px_rgba(234,179,8,0.1)] md:-mt-4 md:mb-4 z-10'
                                 : player.rank === 2
@@ -160,7 +161,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
 
@@ -186,7 +187,11 @@ export default function Scoreboard({ date }: { date?: Date }) {
                             {players.slice(3).map((player) => (
                                 <tr key={player.id} className="hover:bg-white/5 transition-colors group">
                                     <td className="p-4 text-center font-mono text-gray-500 font-bold">#{player.rank}</td>
-                                    <td className="p-4 font-medium text-gray-200 group-hover:text-white transition-colors">{player.name}</td>
+                                    <td className="p-4 font-medium text-gray-200 group-hover:text-white transition-colors">
+                                        <Link href={`/player/${player.id}`} className="hover:underline hover:text-blue-400 transition-colors">
+                                            {player.name}
+                                        </Link>
+                                    </td>
                                     <td className="p-4 text-right font-mono text-blue-400 font-bold">{player.gamesPlayed > 0 ? player.rating : '-'}</td>
                                     <td className="p-4 text-center hidden sm:table-cell">
                                         <div className="flex items-center justify-center gap-3 font-mono text-sm">
