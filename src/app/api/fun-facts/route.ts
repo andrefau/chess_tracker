@@ -66,24 +66,45 @@ export async function GET() {
                 }
                 return null
             },
-            // 4. Dead Heat: 10 wins each and 2 draws (approx equal)
+            // 4. Dead Heat: Identical stats this week (wins, losses, draws) for active players
             () => {
-                const p1 = getRandom(users)
-                if (!p1) return null
-                const opponents = users.filter(u => u.id !== p1.id)
-                for (const p2 of opponents) {
-                    const headToHead = matches.filter(m =>
-                        (m.playerAId === p1.id && m.playerBId === p2.id) ||
-                        (m.playerAId === p2.id && m.playerBId === p1.id)
-                    )
-                    if (headToHead.length < 10) continue
+                const d = new Date()
+                const day = d.getDay()
+                const diff = d.getDate() - day + (day == 0 ? -6 : 1)
+                const monday = new Date(d.setDate(diff))
+                monday.setHours(0, 0, 0, 0)
 
-                    const p1Wins = headToHead.filter(m => (m.playerAId === p1.id && m.result === 'A_WON') || (m.playerBId === p1.id && m.result === 'B_WON')).length
-                    const p2Wins = headToHead.filter(m => (m.playerAId === p2.id && m.result === 'B_WON') || (m.playerBId === p2.id && m.result === 'A_WON')).length
-                    const draws = headToHead.filter(m => m.result === 'DRAW').length
+                const weeklyMatches = matches.filter(m => new Date(m.date) >= monday)
+                if (weeklyMatches.length === 0) return null
 
-                    if (p1Wins === p2Wins || Math.abs(p1Wins - p2Wins) <= 1) {
-                        return `Det er heilt jamt mellom ${p1.name} og ${p2.name}: ${p1Wins} sigrar kvar og ${draws} remis.`
+                const playerStats = []
+                for (const u of users) {
+                    const myMatches = weeklyMatches.filter(m => m.playerAId === u.id || m.playerBId === u.id)
+                    if (myMatches.length === 0) continue
+
+                    let wins = 0, losses = 0, draws = 0
+                    for (const m of myMatches) {
+                        if (m.result === 'DRAW') {
+                            draws++
+                        } else if ((m.playerAId === u.id && m.result === 'A_WON') || (m.playerBId === u.id && m.result === 'B_WON')) {
+                            wins++
+                        } else {
+                            losses++
+                        }
+                    }
+                    playerStats.push({ user: u, wins, losses, draws })
+                }
+
+                if (playerStats.length < 2) return null
+
+                for (let i = 0; i < playerStats.length; i++) {
+                    for (let j = i + 1; j < playerStats.length; j++) {
+                        const p1 = playerStats[i]
+                        const p2 = playerStats[j]
+
+                        if (p1.wins === p2.wins && p1.losses === p2.losses && p1.draws === p2.draws) {
+                            return `Daudt løp mellom ${p1.user.name} og ${p2.user.name}! Begge har ${p1.wins} sigrar, ${p1.losses} tap og ${p1.draws} remis denne veka.`
+                        }
                     }
                 }
                 return null
