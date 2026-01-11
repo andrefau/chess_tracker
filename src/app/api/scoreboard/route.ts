@@ -105,7 +105,8 @@ export async function GET(request: Request) {
         draws: stats[user.id]?.draws || 0,
         gamesAsWhite: stats[user.id]?.gamesAsWhite || 0,
         gamesAsBlack: stats[user.id]?.gamesAsBlack || 0,
-        gamesPlayed: (stats[user.id]?.wins || 0) + (stats[user.id]?.losses || 0) + (stats[user.id]?.draws || 0)
+        gamesPlayed: (stats[user.id]?.wins || 0) + (stats[user.id]?.losses || 0) + (stats[user.id]?.draws || 0),
+        percentage: ((stats[user.id]?.wins || 0) * 1 + (stats[user.id]?.draws || 0) * 0.5) / ((stats[user.id]?.wins || 0) + (stats[user.id]?.losses || 0) + (stats[user.id]?.draws || 0)) * 100 || 0
     }))
 
     // Re-sort by weekly rating, but push 0 games played to bottom

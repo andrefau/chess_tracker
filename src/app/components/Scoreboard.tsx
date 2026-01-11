@@ -17,6 +17,7 @@ interface PlayerStats {
     gamesPlayed: number
     gamesAsWhite: number
     gamesAsBlack: number
+    percentage: number
 }
 
 export default function Scoreboard({ date }: { date?: Date }) {
@@ -160,6 +161,9 @@ export default function Scoreboard({ date }: { date?: Date }) {
                                     <span className="text-gray-400 font-bold">{player.draws}U</span>
                                 </div>
                             </div>
+                            <div className="mt-2 text-sm font-mono text-gray-400">
+                                {Math.round(player.percentage)}%
+                            </div>
                         </div>
                     </Link>
                 ))}
@@ -179,6 +183,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
                                 <th className="p-4 font-semibold text-center w-16">Rang</th>
                                 <th className="p-4 font-semibold">Spelar</th>
                                 <th className="p-4 font-semibold text-right">Rating</th>
+                                <th className="p-4 font-semibold text-right">Prosent</th>
                                 <th className="p-4 font-semibold text-center hidden sm:table-cell">Statistikk (V-T-U)</th>
                                 <th className="p-4 font-semibold text-right">Kampar</th>
                             </tr>
@@ -193,6 +198,7 @@ export default function Scoreboard({ date }: { date?: Date }) {
                                         </Link>
                                     </td>
                                     <td className="p-4 text-right font-mono text-blue-400 font-bold">{player.gamesPlayed > 0 ? player.rating : '-'}</td>
+                                    <td className="p-4 text-right font-mono text-gray-400 font-bold">{Math.round(player.percentage)}%</td>
                                     <td className="p-4 text-center hidden sm:table-cell">
                                         <div className="flex items-center justify-center gap-3 font-mono text-sm">
                                             <span className="text-green-500">{player.wins}</span>
