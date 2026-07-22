@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Swords, Trash2 } from 'lucide-react'
+import { ArrowLeft, Swords, Trash2, Pencil, X } from 'lucide-react'
 import EloGraph from '@/app/components/EloGraph'
 import ConfirmationModal from '@/app/components/ConfirmationModal'
+import { Button } from '@/app/components/ui/Button'
+import { Input } from '@/app/components/ui/Input'
 
 interface PlayerData {
     user: {
@@ -32,6 +34,8 @@ export default function PlayerPage() {
     const [data, setData] = useState<PlayerData | null>(null)
     const [loading, setLoading] = useState(true)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showRenameModal, setShowRenameModal] = useState(false)
+    const [nameInput, setNameInput] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,6 +53,23 @@ export default function PlayerPage() {
         }
         if (id) fetchData()
     }, [id])
+
+    const handleRename = async () => {
+        if (!nameInput.trim()) return
+        try {
+            const res = await fetch(`/api/users/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: nameInput.trim() }),
+            })
+            if (res.ok) {
+                setData(prev => prev ? { ...prev, user: { ...prev.user, name: nameInput.trim() } } : prev)
+                setShowRenameModal(false)
+            }
+        } catch (error) {
+            console.error('Error renaming user:', error)
+        }
+    }
 
     const handleDelete = async () => {
         try {
@@ -94,13 +115,22 @@ export default function PlayerPage() {
                             <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{data.user.name}</h1>
                             <p className="text-gray-400 text-sm">Medlem sidan {new Date(data.user.createdAt).toLocaleDateString('no-NO')}</p>
                         </div>
-                        <button
-                            onClick={() => setShowDeleteModal(true)}
-                            className="p-2 text-red-400/50 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
-                            title="Slett spelar"
-                        >
-                            <Trash2 className="w-5 h-5" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => { setNameInput(data.user.name); setShowRenameModal(true) }}
+                                className="p-2 text-gray-400/50 hover:text-gray-200 hover:bg-white/10 rounded-lg transition-all"
+                                title="Endre namn"
+                            >
+                                <Pencil className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={() => setShowDeleteModal(true)}
+                                className="p-2 text-red-400/50 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                                title="Slett spelar"
+                            >
+                                <Trash2 className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
@@ -206,6 +236,40 @@ export default function PlayerPage() {
                     </div>
                 </div>
             </div>
+
+            {showRenameModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+                    <div className="relative w-full max-w-md bg-[#0f1115] border border-white/10 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+                        <button
+                            onClick={() => setShowRenameModal(false)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-300 transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        <h2 className="text-xl font-bold text-white mb-6">Endre namn</h2>
+                        <Input
+                            label="Nytt namn"
+                            value={nameInput}
+                            onChange={e => setNameInput(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && handleRename()}
+                            autoFocus
+                        />
+                        <div className="flex gap-3 mt-6">
+                            <Button variant="secondary" className="flex-1" onClick={() => setShowRenameModal(false)}>
+                                Avbryt
+                            </Button>
+                            <Button
+                                variant="primary"
+                                className="flex-1"
+                                onClick={handleRename}
+                                disabled={!nameInput.trim()}
+                            >
+                                Lagre
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <ConfirmationModal
                 isOpen={showDeleteModal}

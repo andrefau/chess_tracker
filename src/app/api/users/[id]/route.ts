@@ -118,6 +118,24 @@ export async function GET(
     })
 }
 
+export async function PATCH(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const { id } = await params
+        const { name } = await request.json()
+        if (!name?.trim()) {
+            return NextResponse.json({ error: 'Namn er påkravd' }, { status: 400 })
+        }
+        const user = await prisma.user.update({ where: { id }, data: { name: name.trim() } })
+        return NextResponse.json(user)
+    } catch (error) {
+        console.error('Error updating user:', error)
+        return NextResponse.json({ error: 'Error updating user' }, { status: 500 })
+    }
+}
+
 export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
